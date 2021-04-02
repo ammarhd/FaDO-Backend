@@ -16,6 +16,7 @@ const server = http.createServer(app);
 const io = socketIo(server); // < Interesting!
 var trx1000 = [];
 var L1_transactions = [];
+var l3_txs = [];
 
 ///reading the file content
 fileStream = fs
@@ -40,8 +41,7 @@ io.on("connection", (socket) => {
 
   //send l3 txs
   setInterval(() => {
-    var l3_txs = L1_transactions;
-    L1_transactions = [];
+    //console.log(l3_txs);
     socket.emit("l3_txs", l3_txs);
   }, 1000);
 
@@ -55,8 +55,10 @@ io.on("connection", (socket) => {
 
   // listen to l1_transactions from reactjs
   socket.on("l1_txs", (txs) => {
-    console.log(txs);
+    console.log(txs.length);
     L1_transactions = [...L1_transactions, ...txs];
+    l3_txs = L1_transactions;
+    L1_transactions = [];
   });
 });
 
